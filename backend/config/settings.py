@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-
+import re
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -179,7 +179,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
-
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://doctor-app-django-rest-.*-walaa-horanis-projects\.vercel\.app$",
+]
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = [
     origin.strip() 
