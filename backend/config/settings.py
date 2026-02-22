@@ -198,11 +198,7 @@ REST_FRAMEWORK = {
 
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get(
-        "CORS_ALLOWED_ORIGINS",
-        "http://localhost:3000"
-    ).split(",")
+    "https://doctor-app-django-rest.vercel.app",
 ]
 
 
