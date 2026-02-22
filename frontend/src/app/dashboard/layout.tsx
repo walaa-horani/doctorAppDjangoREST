@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 export default function DashboardLayout({
     children,
@@ -77,15 +78,21 @@ function NavLinks({ role, onClick }: { role: string, onClick?: () => void }) {
         <>
             {role === 'PROVIDER' && (
                 <>
+                    <Link href="/" onClick={onClick} className="block px-4 py-2 flex items-center gap-2 rounded-md hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-medium transition-colors"><ArrowLeft /> Home</Link>
                     <Link href="/dashboard/provider" onClick={onClick} className="block px-4 py-2 rounded-md hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-medium transition-colors">Overview</Link>
                     <Link href="/dashboard/provider/services" onClick={onClick} className="block px-4 py-2 rounded-md hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-medium transition-colors">My Services</Link>
                     <Link href="/dashboard/provider/schedule" onClick={onClick} className="block px-4 py-2 rounded-md hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-medium transition-colors">Schedule</Link>
+
+
                 </>
             )}
             {role === 'CLIENT' && (
                 <>
+                    <Link href="/" onClick={onClick} className="block px-4 py-2 flex items-center gap-2 rounded-md hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-medium transition-colors"><ArrowLeft /> Home</Link>
                     <Link href="/dashboard/client" onClick={onClick} className="block px-4 py-2 rounded-md hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-medium transition-colors">My Appointments</Link>
                     <Link href="/browse" onClick={onClick} className="block px-4 py-2 rounded-md hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-medium transition-colors">Browse Providers</Link>
+
+
                 </>
             )}
         </>

@@ -1,0 +1,54 @@
+Traceback (most recent call last):
+  File "C:\Users\Walaa\AppData\Roaming\Python\Python313\site-packages\django\core\files\storage\handler.py", line 26, in __getitem__
+    return self._storages[alias]
+           ~~~~~~~~~~~~~~^^^^^^^
+KeyError: 'default'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Walaa\AppData\Roaming\Python\Python313\site-packages\django\core\files\storage\handler.py", line 29, in __getitem__
+    params = self.backends[alias]
+             ~~~~~~~~~~~~~^^^^^^^
+KeyError: 'default'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Walaa\OneDrive\Desktop\DJANGODoctorApppointment\backend\test_script.py", line 11, in <module>
+    data = UserSerializer(qs, many=True).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Walaa\AppData\Roaming\Python\Python313\site-packages\rest_framework\serializers.py", line 797, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\Walaa\AppData\Roaming\Python\Python313\site-packages\rest_framework\serializers.py", line 251, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Walaa\AppData\Roaming\Python\Python313\site-packages\rest_framework\serializers.py", line 716, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Walaa\AppData\Roaming\Python\Python313\site-packages\rest_framework\serializers.py", line 540, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\Walaa\AppData\Roaming\Python\Python313\site-packages\rest_framework\serializers.py", line 540, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\Walaa\AppData\Roaming\Python\Python313\site-packages\rest_framework\fields.py", line 1545, in to_representation
+    url = value.url
+          ^^^^^^^^^
+  File "C:\Users\Walaa\AppData\Roaming\Python\Python313\site-packages\django\db\models\fields\files.py", line 70, in url
+    return self.storage.url(self.name)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Walaa\AppData\Roaming\Python\Python313\site-packages\django\utils\functional.py", line 251, in inner
+    self._setup()
+    ~~~~~~~~~~~^^
+  File "C:\Users\Walaa\AppData\Roaming\Python\Python313\site-packages\django\core\files\storage\__init__.py", line 23, in _setup
+    self._wrapped = storages[DEFAULT_STORAGE_ALIAS]
+                    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Walaa\AppData\Roaming\Python\Python313\site-packages\django\core\files\storage\handler.py", line 31, in __getitem__
+    raise InvalidStorageError(
+        f"Could not find config for '{alias}' in settings.STORAGES."
+    )
+django.core.files.storage.handler.InvalidStorageError: Could not find config for 'default' in settings.STORAGES.
+Providers count: 6
+ERROR:

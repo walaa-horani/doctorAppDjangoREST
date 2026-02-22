@@ -67,7 +67,7 @@ export default function Home() {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent"></div>
         </div>
-        <div className="container px-4 md:px-6 relative z-10">
+        <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="flex flex-col md:flex-row items-center gap-12">
             <div className="flex-1 space-y-6 animate-in slide-in-from-left duration-700">
               <div className="inline-block rounded-full bg-teal-100 px-3 py-1 text-sm font-semibold text-teal-800">
@@ -108,7 +108,7 @@ export default function Home() {
 
       {/* Services Section */}
       <section id="services" className="py-20 bg-slate-50">
-        <div className="container px-4 md:px-6">
+        <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Our Medical Services</h2>
             <p className="mt-4 text-lg text-slate-600">Comprehensive care for you and your family</p>
@@ -138,7 +138,7 @@ export default function Home() {
 
       {/* Doctors Section */}
       <section id="doctors" className="py-20 bg-white">
-        <div className="container px-4 md:px-6">
+        <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Meet Our Specialists</h2>
             <p className="mt-4 text-lg text-slate-600">Top-rated doctors ready to help you.</p>
@@ -190,7 +190,7 @@ export default function Home() {
 
       {/* Stats Section */}
       <section className="bg-teal-600 text-white py-16">
-        <div className="container px-4 md:px-6">
+        <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div className="space-y-2">
               <h3 className="text-4xl font-bold">10k+</h3>
@@ -214,7 +214,7 @@ export default function Home() {
 
       {/* How It Works Section */}
       <section className="py-20 bg-white">
-        <div className="container px-4 md:px-6">
+        <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">How It Works</h2>
             <p className="mt-4 text-lg text-slate-600">Get medical care in 3 simple steps</p>
@@ -241,7 +241,7 @@ export default function Home() {
 
       {/* Testimonials Section */}
       <section className="py-20 bg-slate-50">
-        <div className="container px-4 md:px-6">
+        <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">What Our Patients Say</h2>
             <p className="mt-4 text-lg text-slate-600">Real stories from people we've helped</p>
@@ -273,7 +273,7 @@ export default function Home() {
 
       {/* FAQ Section */}
       <section className="py-20 bg-white">
-        <div className="container px-4 md:px-6 max-w-4xl mx-auto">
+        <div className="container mx-auto px-4 md:px-6 max-w-4xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Frequently Asked Questions</h2>
           </div>
@@ -295,7 +295,7 @@ export default function Home() {
       {/* CTA Section */}
       <section className="py-24 bg-teal-600 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/medical-icons.png')]"></div>
-        <div className="container px-4 md:px-6 text-center relative z-10">
+        <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
           <h2 className="text-3xl font-bold mb-4">Ready to Prioritize Your Health?</h2>
           <p className="mb-8 opacity-90 text-lg max-w-2xl mx-auto">Join thousands of satisfied patients who have found their perfect doctor. It's time to take control of your well-being.</p>
           <div className="flex justify-center gap-4">
@@ -311,7 +311,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-300 py-12">
-        <div className="container px-4 md:px-6">
+        <div className="container mx-auto px-4 md:px-6">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-2 font-bold text-xl text-white mb-4">

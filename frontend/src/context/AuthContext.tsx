@@ -48,7 +48,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             .then((res) => {
                 setUser(res.data);
                 // Redirect based on role
-                if (res.data.role === 'ADMIN') router.push('/admin');
+                if (res.data.role === 'ADMIN') {
+                    // Redirect to the Django backend admin URL
+                    window.location.href = `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000'}/admin`;
+                }
                 else if (res.data.role === 'PROVIDER') router.push('/dashboard/provider');
                 else router.push('/dashboard/client');
             })

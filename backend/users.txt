@@ -1,0 +1,11 @@
+Email: test@example.com - Role: CLIENT
+Email: patient@example.com - Role: CLIENT
+Email: walaa.horani@hotmail.com - Role: ADMIN
+Email: client@example.com - Role: CLIENT
+Email: linda.chen@example.com - Role: PROVIDER
+Email: emily.davis@example.com - Role: PROVIDER
+Email: david.martinez@example.com - Role: PROVIDER
+Email: jennifer.taylor@example.com - Role: PROVIDER
+Email: william.anderson@example.com - Role: PROVIDER
+Email: elizabeth.thomas@example.com - Role: PROVIDER
+Email: test@hotmail.com - Role: ADMIN
