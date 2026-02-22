@@ -179,16 +179,14 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^https://doctor-app-django-rest-.*-walaa-horanis-projects\.vercel\.app$",
-]
+
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = [
-    origin.strip() 
+    origin.strip()
     for origin in os.environ.get(
-        'CORS_ALLOWED_ORIGINS',
-        'http://localhost:3000'
-    ).split(',')
+        "CORS_ALLOWED_ORIGINS",
+        "http://localhost:3000"
+    ).split(",")
 ]
 
 
