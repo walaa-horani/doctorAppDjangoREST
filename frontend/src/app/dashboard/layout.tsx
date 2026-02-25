@@ -1,100 +1,180 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import {
+    LayoutDashboard,
+    CalendarDays,
+    Stethoscope,
+    Search,
+    Clock,
+    BarChart3,
+    LogOut,
+    Menu,
+    X,
+    Activity,
+    User,
+    Settings,
+    ChevronRight,
+} from "lucide-react";
 
-export default function DashboardLayout({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
+const clientNav = [
+    { href: "/dashboard/client", label: "Overview", icon: LayoutDashboard },
+    { href: "/dashboard/client/appointments", label: "My Appointments", icon: CalendarDays },
+    { href: "/browse", label: "Find Doctors", icon: Search },
+];
+
+const providerNav = [
+    { href: "/dashboard/provider", label: "Overview", icon: LayoutDashboard },
+    { href: "/dashboard/provider/appointments", label: "Appointments", icon: CalendarDays },
+    { href: "/dashboard/provider/services", label: "My Services", icon: Stethoscope },
+    { href: "/dashboard/provider/schedule", label: "Schedule", icon: Clock },
+    { href: "/dashboard/provider/analytics", label: "Analytics", icon: BarChart3 },
+];
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const { user, logout } = useAuth();
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isMobileOpen, setIsMobileOpen] = useState(false);
+    const pathname = usePathname();
 
-    if (!user) {
-        return null;
-    }
+    if (!user) return null;
+
+    const navItems = user.role === "PROVIDER" ? providerNav : clientNav;
+    const roleLabel = user.role === "PROVIDER" ? "Provider" : "Patient";
+    const roleColor = user.role === "PROVIDER" ? "from-teal-500 to-cyan-500" : "from-violet-500 to-purple-500";
+
+    const SidebarContent = ({ onClose }: { onClose?: () => void }) => (
+        <div className="flex flex-col h-full">
+            {/* Logo */}
+            <div className="px-6 py-5 border-b border-white/10">
+                <Link href="/" className="flex items-center gap-2.5" onClick={onClose}>
+                    <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
+                        <Activity className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-xl font-bold text-white">MediCare</span>
+                </Link>
+            </div>
+
+            {/* User Info */}
+            <div className="px-4 py-4 border-b border-white/10">
+                <div className="flex items-center gap-3 px-2 py-3 rounded-xl bg-white/5">
+                    <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${roleColor} flex items-center justify-center text-white font-semibold text-sm flex-shrink-0`}>
+                        {user.first_name?.[0] || user.email[0].toUpperCase()}
+                    </div>
+                    <div className="min-w-0">
+                        <p className="text-white font-medium text-sm truncate">
+                            {user.first_name ? `${user.first_name} ${user.last_name || ""}`.trim() : user.email}
+                        </p>
+                        <span className={`text-xs font-medium bg-gradient-to-r ${roleColor} bg-clip-text text-transparent`}>
+                            {roleLabel}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Nav Links */}
+            <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+                <p className="px-3 text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">Menu</p>
+                {navItems.map(({ href, label, icon: Icon }) => {
+                    const isActive = pathname === href || (href !== "/dashboard/client" && href !== "/dashboard/provider" && pathname.startsWith(href));
+                    return (
+                        <Link
+                            key={href}
+                            href={href}
+                            onClick={onClose}
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group ${isActive
+                                    ? "bg-teal-500/20 text-teal-400 border border-teal-500/30"
+                                    : "text-white/60 hover:text-white hover:bg-white/8"
+                                }`}
+                        >
+                            <Icon className={`w-4.5 h-4.5 flex-shrink-0 ${isActive ? "text-teal-400" : "text-white/40 group-hover:text-white/70"}`} size={18} />
+                            <span className="flex-1">{label}</span>
+                            {isActive && <ChevronRight size={14} className="text-teal-400" />}
+                        </Link>
+                    );
+                })}
+            </nav>
+
+            {/* Bottom actions */}
+            <div className="px-3 pb-4 border-t border-white/10 pt-4 space-y-1">
+                <Link
+                    href="/settings"
+                    onClick={onClose}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-white/60 hover:text-white hover:bg-white/8 transition-all"
+                >
+                    <Settings size={18} className="text-white/40" />
+                    Settings
+                </Link>
+                <button
+                    onClick={() => { onClose?.(); logout(); }}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400/80 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                >
+                    <LogOut size={18} />
+                    Sign out
+                </button>
+            </div>
+        </div>
+    );
 
     return (
-        <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="flex h-screen bg-slate-50 overflow-hidden">
             {/* Desktop Sidebar */}
-            <aside className="w-64 bg-white dark:bg-gray-800 border-r hidden md:block">
-                <div className="p-6">
-                    <h2 className="text-2xl font-bold text-teal-600">MediCare</h2>
-                    <p className="text-sm text-gray-500 mt-1 uppercase tracking-wider font-semibold">{user.role}</p>
-                </div>
-                <nav className="mt-6 px-4 space-y-2">
-                    <NavLinks role={user.role} />
-                    <Button variant="ghost" className="w-full justify-start mt-10 text-red-500 hover:text-red-600 hover:bg-red-50" onClick={logout}>
-                        Logout
-                    </Button>
-                </nav>
+            <aside className="w-64 bg-slate-900 hidden md:flex flex-col flex-shrink-0">
+                <SidebarContent />
             </aside>
 
-            {/* Mobile Sidebar (Overlay) */}
-            {isMobileMenuOpen && (
+            {/* Mobile Sidebar Overlay */}
+            {isMobileOpen && (
                 <div className="fixed inset-0 z-50 flex md:hidden">
-                    <div className="fixed inset-0 bg-black/50" onClick={() => setIsMobileMenuOpen(false)}></div>
-                    <aside className="relative w-64 bg-white dark:bg-gray-800 h-full shadow-xl flex flex-col">
-                        <div className="p-6 border-b flex justify-between items-center">
-                            <h2 className="text-xl font-bold text-teal-600">MediCare</h2>
-                            <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
-                                <span className="sr-only">Close</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-                            </Button>
-                        </div>
-                        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-                            <NavLinks role={user.role} onClick={() => setIsMobileMenuOpen(false)} />
-                            <Button variant="ghost" className="w-full justify-start mt-10 text-red-500 hover:text-red-600 hover:bg-red-50" onClick={logout}>
-                                Logout
-                            </Button>
-                        </nav>
+                    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileOpen(false)} />
+                    <aside className="relative w-72 bg-slate-900 flex flex-col shadow-2xl">
+                        <button
+                            onClick={() => setIsMobileOpen(false)}
+                            className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all"
+                        >
+                            <X size={16} />
+                        </button>
+                        <SidebarContent onClose={() => setIsMobileOpen(false)} />
                     </aside>
                 </div>
             )}
 
-            {/* Main Content */}
-            <main className="flex-1 flex flex-col overflow-hidden">
-                <header className="h-16 bg-white dark:bg-gray-800 border-b flex items-center justify-between px-4 md:hidden">
-                    <span className="font-bold text-lg text-teal-600">MediCare</span>
-                    <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(true)}>
-                        <span className="sr-only">Open menu</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6"><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg>
-                    </Button>
+            {/* Main Content Area */}
+            <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+                {/* Top Header Bar */}
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 flex-shrink-0">
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => setIsMobileOpen(true)}
+                            className="md:hidden w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-all"
+                        >
+                            <Menu size={18} />
+                        </button>
+                        <div className="hidden md:block">
+                            <h1 className="text-sm font-semibold text-slate-900">
+                                {navItems.find(n => n.href === pathname)?.label || "Dashboard"}
+                            </h1>
+                            <p className="text-xs text-slate-500">Welcome back, {user.first_name || user.email.split("@")[0]}</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <div className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r ${roleColor} bg-opacity-10`}>
+                            <User size={13} className="text-white" />
+                            <span className="text-xs font-medium text-white">{roleLabel}</span>
+                        </div>
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center text-white font-semibold text-sm">
+                            {user.first_name?.[0] || user.email[0].toUpperCase()}
+                        </div>
+                    </div>
                 </header>
-                <div className="flex-1 overflow-y-auto p-4 md:p-8">
+
+                {/* Page Content */}
+                <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
                     {children}
-                </div>
-            </main>
+                </main>
+            </div>
         </div>
-    );
-}
-
-function NavLinks({ role, onClick }: { role: string, onClick?: () => void }) {
-    return (
-        <>
-            {role === 'PROVIDER' && (
-                <>
-                    <Link href="/" onClick={onClick} className="block px-4 py-2 flex items-center gap-2 rounded-md hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-medium transition-colors"><ArrowLeft /> Home</Link>
-                    <Link href="/dashboard/provider" onClick={onClick} className="block px-4 py-2 rounded-md hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-medium transition-colors">Overview</Link>
-                    <Link href="/dashboard/provider/services" onClick={onClick} className="block px-4 py-2 rounded-md hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-medium transition-colors">My Services</Link>
-                    <Link href="/dashboard/provider/schedule" onClick={onClick} className="block px-4 py-2 rounded-md hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-medium transition-colors">Schedule</Link>
-
-
-                </>
-            )}
-            {role === 'CLIENT' && (
-                <>
-                    <Link href="/" onClick={onClick} className="block px-4 py-2 flex items-center gap-2 rounded-md hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-medium transition-colors"><ArrowLeft /> Home</Link>
-                    <Link href="/dashboard/client" onClick={onClick} className="block px-4 py-2 rounded-md hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-medium transition-colors">My Appointments</Link>
-                    <Link href="/browse" onClick={onClick} className="block px-4 py-2 rounded-md hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-medium transition-colors">Browse Providers</Link>
-
-
-                </>
-            )}
-        </>
     );
 }
