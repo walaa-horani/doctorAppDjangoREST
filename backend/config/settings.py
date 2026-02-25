@@ -197,13 +197,16 @@ REST_FRAMEWORK = {
 }
 
 # CORS Configuration
-CORS_ALLOWED_ORIGINS = [
-    "https://doctor-app-django-rest.vercel.app",
-]
+CORS_ALLOWED_ORIGINS = os.environ.get(
+    'CORS_ALLOWED_ORIGINS', 
+    'https://doctor-app-django-rest.vercel.app'
+).split(',')
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://doctor-app-django-rest.vercel.app",
-]
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    'CORS_ALLOWED_ORIGINS', 
+    'https://doctor-app-django-rest.vercel.app'
+).split(',')
+
 CORS_ALLOW_CREDENTIALS = True
 
 # Simple JWT Configuration
