@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Activity, Heart, Stethoscope, User, Clock, MapPin, Star, Phone } from "lucide-react";
+import { Activity, Heart, Stethoscope, User, Clock, MapPin, Star, Phone, LayoutDashboard, LogIn } from "lucide-react";
 import { BookingModal } from "@/components/booking-modal";
+import { useAuth } from "@/context/AuthContext";
 import api from "@/lib/api";
 
 interface Provider {
@@ -22,6 +23,7 @@ interface Provider {
 }
 
 export default function Home() {
+  const { user } = useAuth();
   const [providers, setProviders] = useState<Provider[]>([]);
 
   useEffect(() => {
@@ -46,13 +48,34 @@ export default function Home() {
             <Link className="hover:text-teal-600 transition-colors" href="#doctors">Doctors</Link>
             <Link className="hover:text-teal-600 transition-colors" href="#contact">Contact</Link>
           </nav>
-          <div className="flex gap-4">
-            <Link href="/login">
-              <Button variant="ghost" className="text-slate-700 hover:text-teal-600">Login</Button>
-            </Link>
-            <Link href="/register">
-              <Button className="bg-teal-600 hover:bg-teal-700 text-white">Get Started</Button>
-            </Link>
+          <div className="flex items-center gap-3">
+            {user ? (
+              // Logged in: show avatar + Dashboard button
+              <>
+                <span className="hidden sm:block text-sm text-slate-500">
+                  Hi, <span className="font-medium text-slate-800">{user.first_name || user.email.split("@")[0]}</span>
+                </span>
+                <Link href={user.role === "PROVIDER" ? "/dashboard/provider" : "/dashboard/client"}>
+                  <Button className="bg-teal-600 hover:bg-teal-700 text-white gap-2">
+                    <LayoutDashboard className="h-4 w-4" />
+                    Dashboard
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              // Logged out: show Login + Register
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" className="text-slate-700 hover:text-teal-600 gap-1.5">
+                    <LogIn className="h-4 w-4" />
+                    Login
+                  </Button>
+                </Link>
+                <Link href="/register">
+                  <Button className="bg-teal-600 hover:bg-teal-700 text-white">Get Started</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>

@@ -18,20 +18,22 @@ import {
     User,
     Settings,
     ChevronRight,
+    Home,
 } from "lucide-react";
 
 const clientNav = [
+    { href: "/", label: "Home", icon: Home },
     { href: "/dashboard/client", label: "Overview", icon: LayoutDashboard },
     { href: "/dashboard/client/appointments", label: "My Appointments", icon: CalendarDays },
     { href: "/browse", label: "Find Doctors", icon: Search },
 ];
 
 const providerNav = [
+    { href: "/", label: "Home", icon: Home },
     { href: "/dashboard/provider", label: "Overview", icon: LayoutDashboard },
     { href: "/dashboard/provider/appointments", label: "Appointments", icon: CalendarDays },
     { href: "/dashboard/provider/services", label: "My Services", icon: Stethoscope },
     { href: "/dashboard/provider/schedule", label: "Schedule", icon: Clock },
-    { href: "/dashboard/provider/analytics", label: "Analytics", icon: BarChart3 },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
