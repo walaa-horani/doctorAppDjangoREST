@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import {
     LayoutDashboard,
@@ -35,10 +35,38 @@ const providerNav = [
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-    const { user, logout } = useAuth();
+    const { user, isLoading, logout } = useAuth();
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const pathname = usePathname();
+    const router = useRouter();
 
+    // Redirect unauthenticated users to login
+    useEffect(() => {
+        if (!isLoading && !user) {
+            router.replace("/login");
+        }
+    }, [isLoading, user, router]);
+
+    // Role-based redirect: prevent cross-dashboard access
+    useEffect(() => {
+        if (!user) return;
+        const onProviderRoute = pathname.startsWith("/dashboard/provider");
+        const onClientRoute = pathname.startsWith("/dashboard/client");
+        if (user.role === "CLIENT" && onProviderRoute) {
+            router.replace("/dashboard/client");
+        } else if (user.role === "PROVIDER" && onClientRoute) {
+            router.replace("/dashboard/provider");
+        }
+    }, [user, pathname, router]);
+
+    // Show spinner while auth resolves
+    if (isLoading) return (
+        <div className="flex h-screen items-center justify-center bg-slate-50">
+            <div className="w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full animate-spin" />
+        </div>
+    );
+
+    // Will redirect via useEffect above; show nothing in the meantime
     if (!user) return null;
 
     const navItems = user.role === "PROVIDER" ? providerNav : clientNav;
@@ -85,8 +113,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             href={href}
                             onClick={onClose}
                             className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group ${isActive
-                                    ? "bg-teal-500/20 text-teal-400 border border-teal-500/30"
-                                    : "text-white/60 hover:text-white hover:bg-white/8"
+                                ? "bg-teal-500/20 text-teal-400 border border-teal-500/30"
+                                : "text-white/60 hover:text-white hover:bg-white/8"
                                 }`}
                         >
                             <Icon className={`w-4.5 h-4.5 flex-shrink-0 ${isActive ? "text-teal-400" : "text-white/40 group-hover:text-white/70"}`} size={18} />
