@@ -5,9 +5,9 @@ import api from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import {
-    Stethoscope, CalendarDays, DollarSign, TrendingUp,
+    Stethoscope, CalendarDays, DollarSign,
     CheckCircle2, Clock, XCircle, Timer, ChevronRight,
-    Plus, ArrowUpRight, Users
+    ArrowUpRight, Users
 } from "lucide-react";
 
 interface Appointment {
@@ -55,6 +55,8 @@ export default function ProviderDashboard() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        // /services/ now returns only THIS provider's services (backend filters by user)
+        // /appointments/ already filters by provider on backend
         Promise.all([api.get("/services/"), api.get("/appointments/")])
             .then(([svcRes, apptRes]) => {
                 setServiceCount(svcRes.data.length);
@@ -72,8 +74,8 @@ export default function ProviderDashboard() {
     const formatDate = (d: string) => new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" });
     const formatTime = (t: string) => {
         const [h, m] = t.split(":");
-        const d = new Date(); d.setHours(+h, +m);
-        return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+        const dt = new Date(); dt.setHours(+h, +m);
+        return dt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
     };
 
     return (
@@ -84,40 +86,30 @@ export default function ProviderDashboard() {
                     <h1 className="text-2xl font-bold text-slate-900">
                         Welcome, Dr. {user?.last_name || user?.first_name || "Doctor"} 👨‍⚕️
                     </h1>
-                    <p className="text-slate-500 text-sm mt-0.5">Here's your practice overview</p>
+                    <p className="text-slate-500 text-sm mt-0.5">Your personal practice overview</p>
                 </div>
-                <div className="flex gap-2">
-                    <Link
-                        href="/dashboard/provider/services"
-                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-xl transition-colors"
-                    >
-                        <Plus size={15} />
-                        Add Service
-                    </Link>
-                    <Link
-                        href="/dashboard/provider/schedule"
-                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-medium rounded-xl transition-colors"
-                    >
-                        <Clock size={15} />
-                        Schedule
-                    </Link>
-                </div>
+                <Link
+                    href="/dashboard/provider/schedule"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-xl transition-colors"
+                >
+                    <Clock size={15} />
+                    Update Schedule
+                </Link>
             </div>
 
             {/* Stat Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard title="My Services" value={serviceCount} sub="Active offerings" icon={Stethoscope} color="bg-teal-500" loading={isLoading} />
                 <StatCard title="Upcoming" value={upcoming.length} sub="Confirmed + pending" icon={CalendarDays} color="bg-amber-500" loading={isLoading} />
-                <StatCard title="Total Revenue" value={`$${revenue.toFixed(0)}`} sub="From completed" icon={DollarSign} color="bg-violet-500" loading={isLoading} />
+                <StatCard title="Total Revenue" value={`$${revenue.toFixed(0)}`} sub="From completed visits" icon={DollarSign} color="bg-violet-500" loading={isLoading} />
                 <StatCard title="Patients Seen" value={uniquePatients} sub="Unique patients" icon={Users} color="bg-cyan-500" loading={isLoading} />
             </div>
 
-            {/* Quick Links */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Quick Links — only schedule and appointments (no "manage services" — that's admin) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
-                    { href: "/dashboard/provider/appointments", icon: CalendarDays, label: "Manage Appointments", desc: "View and update appointment status", color: "bg-teal-50 text-teal-700" },
-                    { href: "/dashboard/provider/services", icon: Stethoscope, label: "Manage Services", desc: "Add, edit or remove your offerings", color: "bg-violet-50 text-violet-700" },
-                    { href: "/dashboard/provider/schedule", icon: Clock, label: "Update Schedule", desc: "Set your availability hours", color: "bg-amber-50 text-amber-700" },
+                    { href: "/dashboard/provider/appointments", icon: CalendarDays, label: "Manage Appointments", desc: "View, confirm, or reject patient bookings", color: "bg-teal-50 text-teal-700" },
+                    { href: "/dashboard/provider/schedule", icon: Clock, label: "Update Schedule", desc: "Set your weekly availability hours", color: "bg-amber-50 text-amber-700" },
                 ].map(({ href, icon: Icon, label, desc, color }) => (
                     <Link key={href} href={href} className="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-sm hover:border-slate-300 transition-all group">
                         <div className={`w-10 h-10 rounded-xl ${color} flex items-center justify-center mb-3`}>
@@ -130,6 +122,28 @@ export default function ProviderDashboard() {
                         </div>
                     </Link>
                 ))}
+            </div>
+
+            {/* My Services (read-only view — admin manages services via Django admin) */}
+            <div className="bg-white rounded-2xl border border-slate-200">
+                <div className="flex items-center justify-between p-5 border-b border-slate-100">
+                    <div>
+                        <h2 className="text-base font-semibold text-slate-900">My Services</h2>
+                        <p className="text-xs text-slate-400 mt-0.5">Managed by admin · {serviceCount} listed</p>
+                    </div>
+                    <Link href="/dashboard/provider/services" className="text-xs text-teal-600 font-medium hover:text-teal-700 flex items-center gap-1">
+                        View all <ArrowUpRight size={13} />
+                    </Link>
+                </div>
+                {isLoading ? (
+                    <div className="p-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {[...Array(3)].map((_, i) => (
+                            <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />
+                        ))}
+                    </div>
+                ) : serviceCount === 0 ? (
+                    <div className="p-10 text-center text-slate-400 text-sm">No services assigned yet.</div>
+                ) : null}
             </div>
 
             {/* Recent Appointments */}

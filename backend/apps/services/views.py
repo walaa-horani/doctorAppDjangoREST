@@ -7,8 +7,20 @@ class IsProvider(permissions.BasePermission):
         return request.user.role == 'PROVIDER'
 
 class ServiceViewSet(viewsets.ModelViewSet):
-    queryset = Service.objects.all()
     serializer_class = ServiceSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        # Authenticated providers only see their own services
+        if user.is_authenticated and hasattr(user, 'role') and user.role == 'PROVIDER':
+            return Service.objects.filter(provider=user)
+        # Clients / unauthenticated users see all active services
+        # Optional: filter by provider via ?provider=<id>
+        qs = Service.objects.filter(is_active=True)
+        provider_id = self.request.query_params.get('provider')
+        if provider_id:
+            qs = qs.filter(provider_id=provider_id)
+        return qs
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
